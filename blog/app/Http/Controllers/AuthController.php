@@ -15,7 +15,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']); //去拿認證需要的資訊
 
-        if (! $token = auth()->attempt($credentials)) { // 驗證憑證 attempt() 驗證使用者資料後給token
+        if (! $token = auth()->attempt($credentials)) {  // 手動驗證使用者 attempt() 驗證使用者資料後給token
             return response()->json(['status' => 1, 'message' => 'invalid credentials'], 401); //不合法憑證
         }
         
