@@ -10,7 +10,7 @@ class Post extends Model //Post model 做關聯user
         'user_id', 'title', 'content',
     ];
     
-    public function user() //關聯user 一個文章一個使用者
+    public function user()  //關聯user 一個文章一個使用者 外鑑是user_id
     {
         return $this->belongsTo('App\User'); 
     }
