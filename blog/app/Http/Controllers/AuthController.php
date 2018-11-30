@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\User; //引入 User Model
+use Auth; //引入 Auth認證
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -14,11 +16,11 @@ class AuthController extends Controller
     public function login() //登入函數 post方式
     {
         $credentials = request(['email', 'password']); //去拿認證需要的資訊
-
-        if (! $token = auth()->attempt($credentials)) {  // 手動驗證使用者 attempt() 驗證使用者資料後給token
+        //dd(Auth::login(User::find(2))); // 登入成功後給session憑證
+        if (! $token = auth()->attempt($credentials)) { // 手動驗證使用者 attempt() 驗證使用者資料後給token
             return response()->json(['status' => 1, 'message' => 'invalid credentials'], 401); //不合法憑證
         }
-        
+
         return response()->json(['status' => 0, 'token' => $token]); //響應 json格式  發放憑證
     }
 
