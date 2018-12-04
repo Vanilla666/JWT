@@ -8,7 +8,7 @@ class PostRepository //做資料庫查詢
 {
     public function index() //查詢文章與使用者資訊
     {
-        return Post::with('user')->get(); //Post與User關聯 Post的user_id 為user的外來鑑
+        return Post::with('user')->get();  //Post與User關聯 Post的user_id 為user的外來鑑
     }
 
     public function find($id) //找到第ID筆文章
@@ -27,5 +27,10 @@ class PostRepository //做資料庫查詢
     public function delete($id) //刪除第ID筆文章
     {
         return Post::destroy($id);
+    }
+    public function query($title) //收尋title文章
+    {
+        // dd(Post::where('title','LIKE','%'.$title.'%'));
+        return Post::where('title','LIKE','%'.$title.'%')->with('user')->get(); //返回找到的文章和關聯的User
     }
 }

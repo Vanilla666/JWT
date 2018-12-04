@@ -18,6 +18,7 @@ class PostController extends Controller
     public function index() //瀏覽文章和使用者資料 get方式
     {
         $posts = $this->postRepo->index(); //查詢文章與使用者資訊
+        //  dd($posts);
         return response()->json(['status' => 0, 'posts' => $posts]); //成功回傳
     }
 
@@ -59,5 +60,12 @@ class PostController extends Controller
         }
 
         return response()->json(['status' => 0, 'message' => 'success']); //成功刪除 回傳
+    }
+    public function query($title)
+    {
+        // $title = request(['title']); //找到收尋title的參數 返回陣列型態需要字串型態 $title['title'] 拿到字串
+        // dd($title);
+        $find_title = $this->postRepo->query($title); //查詢文章藉由tltle 
+        return response()->json(['status' => 0, 'find_title' => $find_title]); //成功刪除 回傳
     }
 }

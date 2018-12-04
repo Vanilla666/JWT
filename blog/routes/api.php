@@ -21,6 +21,7 @@ Route::group(['prefix' => 'auth'],function() { //前綴auth  路由經過中介�
 Route::group(['prefix' => 'post'],function() { //前綴post 路由經過中介層auth->api->guard->driver->jwt 所以要有token才能用以下的功能
     Route::get('index', 'PostController@index'); //顯示所有文章
     Route::get('show', 'PostController@show'); //顯示單筆文章
+    Route::get('query/{title}', 'PostController@query'); //顯示收尋title文章
     Route::post('store', 'PostController@store'); //新增文章
     Route::put('updata/{id}', 'PostController@update'); //更新文章
     Route::delete('delete/{id}', 'PostController@destroy'); //刪除文章
