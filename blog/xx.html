@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <input type="email" id="email" placeholder="email" />
+      <input type="password" id="password" placeholder="password" />
+      <button onclick="login()">登入</button>
+    </div>
+    <div>
+      <button onclick="me()">我是誰？</button>
+      <button onclick="query()">查詢全部文章詳細資訊</button>
+      <div id="content"></div>
+    </div>
+    <script>
+      const login = async () => { //非同步函數
+        const email = $('#email').val(); //拿到email的值
+        const password = $('#password').val(); //拿到password的值
+        console.log(" 拿到現在輸入的email: "+email);
+        console.log(" 拿到現在輸入的password: "+password);
+        try {
+          const { token: JWT_token } = await $.post({ //前端接收變數與後端變數要一樣才能接收 token 跟後端命名有關悉 
+            url: 'http://localhost:8000/api/auth/login', //URL要加上http://  被同源政策擋掉 不合法URL 
+            dataType: 'json', //傳輸類型json
+            data: {//傳輸的資料
+              email,
+              password,
+            },
+          });
+          console.log("串接到的token"+JWT_token);
+          localStorage.token = JWT_token; //暫存JWT_token 到 localStorage.token
+          console.log(localStorage.token);
+        } catch (error) {
+          console.error(error); //錯誤時顯示錯誤代碼
+        }
+      };
+
+      const me = async () => { //非同步函數
+        const user = await $.get({ //get方式
+          url: 'http://localhost:8000/api/auth', //裡面用後端me()的方式 http://localhost:8000/api/post/index 下午改寫把資料拿到
+          dataType: 'json',//傳輸資料json
+          headers: { //送標頭進去
+            Authorization: 'Bearer' + localStorage.token, //要送驗證token進去 證明是合法使用者
+          },
+        });
+        $('#content').html(
+          $.map(user, function(value, key) { //迭代 且回傳是物件型態
+            console.log(value);
+            return `<div>${key}: ${value}</div>`; //每個key跟value都拿出
+          }).join(''),
+        );
+      };
+      const query = async () => { //非同步函數
+        const user = await $.get({ //發送get方式 等到拿到資料 然後一起去顯示到前端 等待 await 非同步資料送回來   
+          url: 'http://localhost:8000/api/post/index', //打 post/index
+          dataType: 'json',//傳輸資料json
+          headers: { //送標頭進去
+            Authorization: 'Bearer' + localStorage.token, //要送驗證token進去 證明是合法使用者
+          },
+        });
+        
+        $('#content').html( //取道當前html元素
+          $.map(user.posts, function(value, key) { //迭代 且回傳是物件型態 value當前迭代的值 ,key=index
+            console.log(value); //以這個為基準去拿裡面的值   value.content
+            return `<div>${(key+1)}:${value.user.name}: ${value.user.email},content:${value.content}</div>`; //每個key跟value都拿出
+          }).join(''),
+        );
+      };
+    </script>
+  </body>
+</html>
